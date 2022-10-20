@@ -2,6 +2,7 @@ use std::io;
 fn main() {
     let array = [10; 5];
     let mut input = String::new();
+    
     // println!("please type a index");
     // io::stdin()
     //     .read_line(&mut input)
