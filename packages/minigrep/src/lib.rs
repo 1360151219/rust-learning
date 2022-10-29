@@ -2,6 +2,7 @@ use std::env;
 use std::error::Error;
 use std::fs;
 use std::path;
+use std::result;
 
 #[derive(Debug)]
 pub struct Config {
@@ -10,19 +11,28 @@ pub struct Config {
     is_case_sensitive: bool,
 }
 impl Config {
-    pub fn new(args: &Vec<String>) -> Result<Config, String> {
-        if args.len() < 3 {
-            return Err(format!(
-                "not enough arguements, needs 2 got {}",
-                args.len() - 1
-            ));
-        }
-        let q = &args[1];
-        let s = &args[2];
+    pub fn new(mut args: env::Args) -> Result<Config, &'static str> {
+        // if args.len() < 3 {
+        //     return Err(format!(
+        //         "not enough arguements, needs 2 got {}",
+        //         args.len() - 1
+        //     ));
+        // }
+        // let q = &args[1];
+        // let s = &args[2];
+        args.next();
+        let q = match args.next() {
+            Some(arg) => arg,
+            None => return Err("not get the query"),
+        };
+        let s = match args.next() {
+            Some(arg) => arg,
+            None => return Err("not get the fileName"),
+        };
         let is_case_sensitive = env::var("CASE_SENSITIVE").is_err();
         Ok(Config {
-            query: q.to_string(),
-            filename: s.to_string(),
+            query: q,
+            filename: s,
             is_case_sensitive,
         })
     }
@@ -55,14 +65,24 @@ pub fn run(conf: Config) -> Result<(), Box<dyn Error>> {
 }
 
 pub fn search<'a>(query: &str, contents: &'a str) -> Vec<Line<'a>> {
-    let mut res: Vec<Line> = Vec::new();
-    for (idx, line) in contents.lines().enumerate() {
-        if line.contains(query) {
-            res.push(Line { line, index: idx })
-        }
-    }
-    res
+    // let mut res: Vec<Line> = Vec::new();
+    // for (idx, line) in contents.lines().enumerate() {
+    //     if line.contains(query) {
+    //         res.push(Line { line, index: idx })
+    //     }
+    // }
+    // res
+    contents
+        .lines()
+        // .filter(|line| line.contains(query))
+        .enumerate()
+        .map(|(i, l)| {
+            Line { line: l, index: i }
+        })
+        .filter(|line| line.line.contains(query))
+        .collect()
 }
+
 pub fn search_case_insensitive<'a>(query: &str, contents: &'a str) -> Vec<Line<'a>> {
     let mut res: Vec<Line> = Vec::new();
     for (idx, line) in contents.lines().enumerate() {
