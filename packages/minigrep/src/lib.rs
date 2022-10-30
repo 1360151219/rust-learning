@@ -2,7 +2,6 @@ use std::env;
 use std::error::Error;
 use std::fs;
 use std::path;
-use std::result;
 
 #[derive(Debug)]
 pub struct Config {
