@@ -6,7 +6,7 @@ use nom::{
     character::complete::multispace0,
     combinator::{map, map_res, value as nom_value},
     error::context,
-    multi::{separated_list0, separated_list1},
+    multi::separated_list0,
     number::complete::double,
     sequence::{delimited, separated_pair},
     IResult,
