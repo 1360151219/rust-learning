@@ -1,4 +1,5 @@
 use std::collections::HashMap;
+use std::fmt::Error;
 
 use nom::{
     branch::alt,
@@ -80,7 +81,7 @@ fn boolean(i: &str) -> IResult<&str, bool> {
 }
 
 fn null(i: &str) -> IResult<&str, JsonValue> {
-    map(tag("null"), |_| JsonValue::Null)(i)
+    map_res(tag("null"), |_| Ok::<_, Error>(JsonValue::Null))(i)
 }
 
 fn array(i: &str) -> IResult<&str, Vec<JsonValue>> {
