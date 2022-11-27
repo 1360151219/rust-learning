@@ -1,5 +1,5 @@
+use hello_macro_derive::HelloMacro;
 use patterns::{four, gibberish, multi_add, mvec, repeat_two};
-
 struct Point {
     x: i32,
     y: i32,
@@ -55,4 +55,14 @@ fn macro_rep_two() {
         vec![1, 7, 2, 8, 3, 9, 4, 10, 5, 11, 6, 12],
         repeat_two!( 1 2 3 4 5 6, 7 8 9 10 11 12)
     )
+}
+
+#[test]
+fn derive_macro_hello() {
+    pub trait HelloMacro {
+        fn hello_macro();
+    }
+    #[derive(HelloMacro)]
+    struct Pancakes;
+    Pancakes::hello_macro();
 }
